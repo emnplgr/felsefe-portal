@@ -1194,7 +1194,7 @@
               <td>Toplam en fazla 45 AKTS ders seçilebilir.</td>
             </tr>
             <tr>
-              <td rowspan="2"><strong>3 - 8. Yarıyıllar</strong></td>
+              <td rowspan="2"><strong>3 - 6. Yarıyıllar</strong></td>
               <td>Önceki Dönem GANO &lt; <strong>1,50</strong></td>
               <td><span class="tag-pill pill-amber">30 AKTS</span></td>
               <td>Öncelikle alt dönem başarısız dersleri olmak üzere azami 30 AKTS.</td>
@@ -1203,6 +1203,12 @@
               <td>Önceki Dönem GANO &ge; <strong>1,50</strong></td>
               <td><span class="tag-pill pill-green">45 AKTS</span></td>
               <td>Öncelikle alt dönem başarısız dersleri olmak üzere azami 45 AKTS.</td>
+            </tr>
+            <tr>
+              <td><strong>7 - 8. Yarıyıllar (Son Sınıf)</strong></td>
+              <td><span class="tag-pill pill-blue">Şart Aranmaz</span></td>
+              <td><span class="tag-pill pill-green">Sınırsız</span></td>
+              <td>Son sınıf öğrencilerine 30/45 AKTS sınırlaması uygulanmaz; mezuniyet için gereken tüm dersler alınabilir.</td>
             </tr>
           </tbody>
         </table>
@@ -3045,7 +3051,8 @@
       const deadlineNote = document.getElementById("gradDeadlineNote");
       if (deadlineNote) {
         const y = parseInt(gradState.enrollYear);
-        if (gradState.enrollYear && !isNaN(y)) {
+        const yValid = gradState.enrollYear && !isNaN(y) && y >= 2000 && y <= 2100;
+        if (yValid) {
           if (graduationReady) {
             deadlineNote.innerHTML = `
               <div class="result-badge-box primary">
@@ -3271,7 +3278,15 @@
       const ganoStatus = document.getElementById("resGanoStatus");
       const goalStatus = document.getElementById("resGoalStatus");
 
-      if (newGano < 1.50) {
+      // Gelecek dönem 7. veya 8. yarıyılsa (son sınıf), Madde 9 gereği AKTS sınırı uygulanmaz.
+      const semSelectElem = document.getElementById("semSelect");
+      const nextSem = (semSelectElem ? parseInt(semSelectElem.value) : 0) + 1;
+
+      if (nextSem >= 7) {
+        nextAkts.textContent = "Sınırsız";
+        nextAkts.style.color = "#15803d";
+        ganoStatus.textContent = "Son sınıfa (7-8. yarıyıl) girdiğiniz için AKTS sınırı uygulanmaz.";
+      } else if (newGano < 1.50) {
         nextAkts.textContent = "30 AKTS";
         nextAkts.style.color = "#d97706";
         ganoStatus.textContent = "1,50 altında: Kredi sınırı (30 AKTS) uygulanır.";
